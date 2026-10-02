@@ -1,8 +1,17 @@
 # rtl-chat-zcode
 
-RTL (right-to-left) chat patch for **ZCode Desktop** — makes Persian/Arabic messages display right-aligned, while English stays left-aligned.
+RTL (right-to-left) chat patch & Persian font customizer for **ZCode Desktop** — makes Persian/Arabic messages display right-aligned, provides customizable fonts (Vazirmatn default), font sizes, and line spacing via an integrated settings panel.
 
 > **Note:** This is a community-made patch. It modifies ZCode's internal `app.asar` file to auto-load a small browser extension. NOT affiliated with ZCode. Re-apply after every ZCode update.
+
+## Features (v0.3.0)
+- 🚀 **Smart RTL/LTR detection**: Persian/Arabic messages align right, English stays left.
+- ⚙️ **Interactive Floating Settings Panel**: Click the `RTL ⚙` badge (bottom-right) to open the control panel.
+- 🔤 **Persian Font Selector**: Built-in support for **Vazirmatn (وزیرمتن)**, Shabnam, Sahel, Samim, Tahoma, System Default, or any Custom font.
+- 📏 **Font Size & Line Height Sliders**: Adjust message font size (12px–22px) and line height (1.3–2.4) live.
+- 🔢 **Persian Digits Option**: Toggle Persian digits (۰۱۲۳۴۵۶۷۸۹) for RTL messages.
+- 💾 **Persistent Settings**: Saves preferences in `localStorage` across restarts.
+- 🐧 **Full Linux & Windows Support**: Automatic path detection and shell scripts for Linux.
 
 ## Quick install (Windows, PowerShell)
 
@@ -36,19 +45,53 @@ After every ZCode update, repeat steps 2–6.
 
 ---
 
+## Quick install (Linux)
+
+1. Open a terminal and `cd` into the repo folder:
+```bash
+cd /path/to/rtl-chat-zcode
+```
+2. Run the installer script:
+```bash
+./install.sh
+```
+(If ZCode is installed system-wide in `/opt/ZCode`, the script will automatically elevate via `pkexec` or `sudo`.)
+
+3. Open ZCode normally (`zcode &`). Look for the small red **RTL** badge at the bottom-right.
+
+- **To uninstall / restore original:**
+```bash
+./uninstall.sh
+```
+- **To launch via CDP without patching (fallback method):**
+```bash
+./start-zcode-rtl.sh
+```
+
+---
+
 <details>
 <summary>🇮🇷 آموزش فارسی (کلیک کنید)</summary>
 
 # RTL Chat برای ZCode Desktop
 
-پکیج کوچک برای **راستچین (RTL) کردن چت فارسی** در ZCode.
+پکیج برای **راستچین (RTL) کردن چت فارسی و تغییر فونت (وزیرمتن)** در ZCode.
 
-اگر تا حالا با ZCode فارسی تایپ کردهاید و متنها برعکس چیده میشوند، این پکیج همان مشکل را درست میکند.
+اگر تا حالا با ZCode فارسی تایپ کردهاید و متنها برعکس چیده میشوند یا میخواهید فونت و اندازه متن چت را شخصیسازی کنید، این پکیج همان امکانات را فراهم میکند.
 
-**نسخه:** 0.2.3
-**سیستمعامل:** ویندوز (روی هر دو نصبِ `C:\Program Files\ZCode` و نصبِ کاربری `AppData\Local\Programs\ZCode` آزموده شده)
+**نسخه:** 0.3.0  
+**سیستمعامل:** لینوکس و ویندوز  
+**ویژگیهای کلیدی:**
+- پنل تنظیمات شناور با کلیک روی برچسب `RTL ⚙` (پایین سمت راست)
+- امکان انتخاب فونت دلخواه: **وزیرمتن (Vazirmatn)**، شبنم، ساحل، صمیم، تاهوما یا فونت دلخواه
+- اسلایدر تغییر سایز فونت (۱۲ تا ۲۲ پیکسل)
+- اسلایدر تنظیم فاصله خطوط (Line-height مناسب فارسی)
+- گزینه نمایش اعداد بهصورت فارسی (۰۱۲۳۴۵۶۷۸۹)
+- ذخیرهسازی تنظیمات در سیستم (Persistence)
+- اسکریپتهای خودکار لینوکس (`install.sh` و `uninstall.sh`)
+
 **پیشنیاز:**
-- نصب بودن [Node.js](https://nodejs.org) (موقع نصب، تیکهای پیشفرض را نگه دارید)
+- نصب بودن [Node.js](https://nodejs.org)
 - همه دستورهای این آموزش برای **Windows PowerShell** است (ترمینال آبی ویندوز). اگر CMD باز کنید، بعضی دستورها فرق دارند.
 
 ---
@@ -70,10 +113,14 @@ After every ZCode update, repeat steps 2–6.
 | `extension/manifest.json` | معرفی افزونه برای مرورگر/الکترون |
 | `extension/rtl-chat.js` | کد اصلی راستچین (همین داخل صفحه اجرا میشود) |
 | `rtl-chat.js` | **نسخه منبع** — اگر خواستید کد را ویرایش کنید، این را عوض کنید و بعد در `extension\rtl-chat.js` کپی کنید |
+| `install.sh` | **اسکریپت نصب و اعمال پچ روی لینوکس** (با شناسایی خودکار مسیر ZCode) |
+| `uninstall.sh` | **اسکریپت بازگردانی نسخه اصلی در لینوکس** |
+| `start-zcode-rtl.sh` | معادل لینوکسی فایل bat (اجرای اضطراری با فلگ CDP) |
+| `verify.sh` | بررسی فعال بودن افزونه در محیط ZCode لینوکس |
 | `asar-work/patch-asar.mjs` | اسکریپت پچ کردن `app.asar` (فاز اصلی نصب) |
 | `verify-no-inject.mjs` | فقط **خواندن** وضعیت — برای مطمئن شدن که پچ کار میکند |
-| `start-zcode-rtl.bat` | راه اضطراری/قدیمی: باز کردن ZCode با فلگ + تزریق دستی (اگر پچ جواب نداد) |
-| `inject-cdp.mjs` | تزریق دستی از راه پورت دیباگ (همراه bat) |
+| `start-zcode-rtl.bat` | راه اضطراری ویندوز: باز کردن ZCode با فلگ + تزریق دستی |
+| `inject-cdp.mjs` | تزریق دستی از راه پورت دیباگ (همراه با اسکریپت اضطراری) |
 
 داخل `asar-work\` بعد از اولین اجرا، فایل بکاپ `app.asar.bak` ساخته میشود. آن را پاک نکنید تا بتوانید برگردانید.
 

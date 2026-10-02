@@ -6,8 +6,24 @@ import { fileURLToPath } from 'node:url'
 const __dirname = path.dirname(fileURLToPath(import.meta.url))
 const APPLY = process.argv.includes('--apply')
 
-// ZCode install path — change only if ZCode is NOT in Program Files
-const ASAR = process.env.ZCODE_ASAR || 'C:/Program Files/ZCode/resources/app.asar'
+// ZCode install path — auto-detect Linux / Windows default
+function getDefaultAsar() {
+  if (process.env.ZCODE_ASAR) return process.env.ZCODE_ASAR
+  if (process.platform === 'win32') {
+    return 'C:/Program Files/ZCode/resources/app.asar'
+  }
+  const linuxCandidates = [
+    '/opt/ZCode/resources/app.asar',
+    '/usr/lib/zcode/resources/app.asar',
+    '/usr/share/zcode/resources/app.asar',
+    path.join(process.env.HOME || '', '.local/share/ZCode/resources/app.asar')
+  ]
+  for (const c of linuxCandidates) {
+    if (fs.existsSync(c)) return c
+  }
+  return '/opt/ZCode/resources/app.asar'
+}
+const ASAR = getDefaultAsar()
 
 // Extension folder sits next to this package: rtl-chat-patch/extension
 // Works no matter where you extract the zip (no hardcoded username).

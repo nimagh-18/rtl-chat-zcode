@@ -1,0 +1,5 @@
+asar-work/*.bak
+asar-work/*.orig
+asar-work/*.patched
+verify.png
+node_modules/
